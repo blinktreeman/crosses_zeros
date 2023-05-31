@@ -6,23 +6,20 @@ import crosses_zeros.exceptions.WrongFieldException;
 /**
  * Игровое поле
  */
-public class Board {
+public abstract class Board {
     private char FIRST_PLAYER_MARK = 'X';
     private char SECOND_PLAYER_MARK = 'O';
-    private int columns;
-    private int rows;
-    private int[] board;
+    protected int columns;
+    protected int rows;
+    protected int[] board;
 
     public Board(int n, int m) {
         columns = n;
         rows = m;
         board = new int[n * m];
-        // for (int i = 0; i < board.length; i++) {
-        // board[i] = '*';
-        // }
     }
 
-    public boolean setField(int x, int y, int player) throws WrongFieldException, FieldIsOccupiedException {
+    protected boolean setField(int player, int x, int y) throws WrongFieldException, FieldIsOccupiedException {
         if (x > columns || y > rows) {
             throw new WrongFieldException();
         }
