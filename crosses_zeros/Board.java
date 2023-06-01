@@ -4,7 +4,7 @@ import crosses_zeros.exceptions.FieldIsOccupiedException;
 import crosses_zeros.exceptions.WrongFieldException;
 
 /**
- * Игровое поле
+ * Игровая доска
  */
 public abstract class Board {
     private char FIRST_PLAYER_MARK = 'X';
@@ -19,19 +19,20 @@ public abstract class Board {
         board = new int[n * m];
     }
 
-    protected boolean setField(int player, int x, int y) throws WrongFieldException, FieldIsOccupiedException {
+    protected void setField(int player, int x, int y) throws WrongFieldException, FieldIsOccupiedException {
         if (x > columns || y > rows) {
             throw new WrongFieldException();
         }
-        int field = x * columns + y;
+        int field = y * columns + x;
         if (board[field] != 0) {
             throw new FieldIsOccupiedException();
         }
         board[field] = player;
-        return true;
-
     }
 
+    /**
+     * Отрисовка доски
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

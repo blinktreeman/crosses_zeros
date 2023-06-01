@@ -15,15 +15,86 @@ public class GameSession extends Board {
         this.winCount = winCount;
     }
 
+    /**
+     * Добавление хода в игру
+     * 
+     * @param player номер игрока
+     * @param x      координата x хода
+     * @param y      координата y хода
+     * @throws WrongFieldException      ход вне пределов доски
+     * @throws FieldIsOccupiedException поле занято
+     */
     public void addTurn(int player, int x, int y)
             throws WrongFieldException, FieldIsOccupiedException {
         // Устанавливаем на доске фишку игрока
         setField(player, x, y);
         // Заполняем возможные варианты развития от заданного поля
         setDirections(player, x, y);
-
+        // При каждом ходе перестраиваем варианты развития
+        rebuildDirections(player, x, y);
     }
 
+    /**
+     * Поиск среди ходов комбинаций с необходмиым количеством установленных фишек
+     * 
+     * @return номер игрока с победной комбинацией, null если нет
+     */
+    public Integer anyoneWin() {
+        for (Turn turn : playersTurns) {
+            for (List<Field> fieldList : turn.directionFields) {
+                if (fieldList.stream().filter(f -> f.isActive()).count() == winCount) {
+                    return turn.getPlayer();
+                }
+            }
+        }
+        return null;
+    }
+
+    private void rebuildDirections(int player, int x, int y) {
+        int field = y * this.columns + x;
+        for (Turn turn : playersTurns) {
+            // Если ход в списке ходов того же игрока,
+            // корректируем его варианты развития
+            // TODO: stream
+            if (turn.getPlayer() == player) {
+                for (List<Field> fieldList : turn.directionFields) {
+                    for (Field f : fieldList) {
+                        if (f.getField() == field) {
+                            f.setActive();
+                        }
+                    }
+                }
+            }
+            // иначе удаляем варианты из списка соперника
+            // TODO: stream
+            else {
+                for (int i = 0; i < turn.directionFields.size(); i++) {
+                    List<Field> fieldList = turn.directionFields.get(i);
+                    boolean isPresent = false;
+                    for (int j = 0; j < fieldList.size(); j++) {
+                        if (fieldList.get(j).getField() == field) {
+                            isPresent = true;
+                            break;
+                        }
+                    }
+                    if (isPresent) {
+                        turn.directionFields.remove(fieldList);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Сохраняет возможные варианты развития от установленного поля
+     * по 8-ми направлениям (N, NE, E, SE, S, SW, W, NW).
+     * Размещение выигрышной комбинации возможно, если достаточно полей (winCount)
+     * и по направлению нет фишек соперника.
+     * 
+     * @param player
+     * @param x
+     * @param y
+     */
     private void setDirections(int player, int x, int y) {
         // Вычисляем номер поля
         int field = y * this.columns + x;
@@ -32,7 +103,7 @@ public class GameSession extends Board {
 
         // North
         // Если расстояние достаточно для размещения выигрышной комбинации
-        if (y - winCount >= 0) {
+        if (y - winCount + 1 >= 0) {
             // Список с полями направления
             List<Field> directions = new ArrayList<>();
             // Стартовое поле в список
@@ -58,7 +129,7 @@ public class GameSession extends Board {
         }
 
         // South
-        if (y + winCount < rows) {
+        if (y + winCount <= rows) {
             List<Field> directions = new ArrayList<>();
             directions.add(new Field(field, true));
 
@@ -78,7 +149,7 @@ public class GameSession extends Board {
         }
 
         // East
-        if (x + winCount < columns) {
+        if (x + winCount <= columns) {
             List<Field> directions = new ArrayList<>();
             directions.add(new Field(field, true));
             for (int i = 1; i < winCount; i++) {
@@ -97,7 +168,7 @@ public class GameSession extends Board {
         }
 
         // West
-        if (x - winCount >= 0) {
+        if (x - winCount + 1 >= 0) {
             List<Field> directions = new ArrayList<>();
             directions.add(new Field(field, true));
             for (int i = 1; i < winCount; i++) {
@@ -116,7 +187,7 @@ public class GameSession extends Board {
         }
 
         // NE
-        if (y - winCount >= 0 && x + winCount < columns) {
+        if (y - winCount + 1 >= 0 && x + winCount <= columns) {
             List<Field> directions = new ArrayList<>();
             directions.add(new Field(field, true));
             for (int i = 1; i < winCount; i++) {
@@ -135,7 +206,7 @@ public class GameSession extends Board {
         }
 
         // NW
-        if (y - winCount >= 0 && x - winCount >= 0) {
+        if (y - winCount + 1 >= 0 && x - winCount + 1 >= 0) {
             List<Field> directions = new ArrayList<>();
             directions.add(new Field(field, true));
             for (int i = 1; i < winCount; i++) {
@@ -154,7 +225,7 @@ public class GameSession extends Board {
         }
 
         // SE
-        if (y + winCount < rows && x + winCount < columns) {
+        if (y + winCount <= rows && x + winCount <= columns) {
             List<Field> directions = new ArrayList<>();
             directions.add(new Field(field, true));
             for (int i = 1; i < winCount; i++) {
@@ -173,7 +244,7 @@ public class GameSession extends Board {
         }
 
         // SW
-        if (y + winCount < rows && x - winCount >= 0) {
+        if (y + winCount <= rows && x - winCount + 1 >= 0) {
             List<Field> directions = new ArrayList<>();
             directions.add(new Field(field, true));
             for (int i = 1; i < winCount; i++) {
@@ -190,7 +261,7 @@ public class GameSession extends Board {
                 turn.directionFields.add(directions);
             }
         }
-
+        // Ход с возможными вариантами развития заносим в список ходов
         playersTurns.add(turn);
     }
 }
