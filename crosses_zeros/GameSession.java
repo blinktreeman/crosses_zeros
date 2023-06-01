@@ -37,9 +37,9 @@ public class GameSession extends Board {
     /**
      * Поиск среди ходов комбинаций с необходмиым количеством установленных фишек
      * 
-     * @return номер игрока с победной комбинацией, null если нет
+     * @return номер игрока с победной комбинацией, 0 если нет
      */
-    public Integer anyoneWin() {
+    public int anyoneWin() {
         for (Turn turn : playersTurns) {
             for (List<Field> fieldList : turn.directionFields) {
                 if (fieldList.stream().filter(f -> f.isActive()).count() == winCount) {
@@ -47,7 +47,7 @@ public class GameSession extends Board {
                 }
             }
         }
-        return null;
+        return 0;
     }
 
     private void rebuildDirections(int player, int x, int y) {

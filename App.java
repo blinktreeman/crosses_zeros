@@ -1,6 +1,9 @@
 import crosses_zeros.Field;
 import crosses_zeros.GameSession;
 import crosses_zeros.Turn;
+import crosses_zeros.players.PlayerEntity;
+import crosses_zeros.players.PlayerFactory;
+import crosses_zeros.players.PlayerTypes;
 
 import java.util.List;
 
@@ -11,24 +14,22 @@ public class App {
 
     public static void main(String[] args) {
         GameSession gameSession = new GameSession(BOARD_WIDTH, BOARD_HEIGHT, NUMBER_OF_CHIPS_TO_WIN);
-        try {
-            gameSession.addTurn(1, 2, 2);
-            gameSession.addTurn(2, 0, 0);
-            gameSession.addTurn(2, 2, 0);
-            gameSession.addTurn(2, 1, 0);
-            gameSession.addTurn(2, 3, 0);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }
+        PlayerFactory playerFactory = new PlayerFactory();
+        PlayerEntity palyer1 = playerFactory.getPlayer(1, PlayerTypes.HUMAN);
+        PlayerEntity palyer2 = playerFactory.getPlayer(2, PlayerTypes.AI);
+
+        do {
+            try {
+                int x = palyer1.makeTurn()[0];
+                int y = palyer1.makeTurn()[1];
+                gameSession.addTurn(palyer1.getId(), 2, 2);
+                gameSession.addTurn(palyer2.getId(), 0, 0);
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+
+        } while (gameSession.anyoneWin() == 0);
+
         System.out.println(gameSession);
-        // for (Turn i : gameSession.playersTurns) {
-        //     for (List<Field> j : i.directionFields) {
-        //         for (Field k : j) {
-        //             System.out.print(k.getField() + " " + k.isActive() + " ");
-        //         }
-        //         System.out.println("");
-        //     }
-        // }
-        System.out.println(gameSession.anyoneWin());
     }
 }
