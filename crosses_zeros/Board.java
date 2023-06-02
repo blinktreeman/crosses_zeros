@@ -16,6 +16,7 @@ public abstract class Board {
     public Board(int n, int m) {
         columns = n;
         rows = m;
+        // Игровое поле одномерный массив
         board = new int[n * m];
     }
 

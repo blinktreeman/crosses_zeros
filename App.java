@@ -11,8 +11,10 @@ public class App {
     private static int NUMBER_OF_CHIPS_TO_WIN = 4;
 
     public static void main(String[] args) {
+        // Создаем игровую сессию
         GameSession gameSession = new GameSession(BOARD_WIDTH, BOARD_HEIGHT, NUMBER_OF_CHIPS_TO_WIN);
         PlayerFactory playerFactory = new PlayerFactory();
+        // Получаем из фабрики двух игроков
         PlayerEntity palyer1 = playerFactory.getPlayer(1, PlayerTypes.AI);
         PlayerEntity palyer2 = playerFactory.getPlayer(2, PlayerTypes.AI);
         // Количество ходов
@@ -24,6 +26,7 @@ public class App {
                     System.out.println("Победил игрок " + palyer2.getId());
                     break;
                 }
+                // Действие первого игрока
                 System.out.println("Введите координаты хода X и Y (от 0 до "
                         + (BOARD_WIDTH - 1) + ") через пробел >>> ");
                 int[] turn = palyer1.makeTurn(BOARD_WIDTH, BOARD_HEIGHT);
@@ -34,6 +37,7 @@ public class App {
                     System.out.println("Победил игрок " + palyer1.getId());
                     break;
                 }
+                // Действие второго игрока
                 System.out.println("Введите координаты хода X и Y (от 0 до "
                         + (BOARD_WIDTH - 1) + ") через пробел >>> ");
                 turn = palyer2.makeTurn(BOARD_WIDTH, BOARD_HEIGHT);

@@ -27,6 +27,7 @@ public class Artificial extends AbstractPlayer implements PlayerEntity {
                 oppTurns.add(turn);
             }
         }
+        // Все собственные ходы
         List<Turn> myTurns = new ArrayList<>();
         for (Turn turn : GameSession.playersTurns) {
             if (turn.getPlayer() == id) {
