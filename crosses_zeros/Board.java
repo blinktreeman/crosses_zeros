@@ -11,7 +11,7 @@ public abstract class Board {
     private char SECOND_PLAYER_MARK = 'O';
     protected int columns;
     protected int rows;
-    protected int[] board;
+    public static int[] board;
 
     public Board(int n, int m) {
         columns = n;

@@ -10,7 +10,7 @@ public class PlayerFactory {
                 break;
             }
             case AI : {
-                player = new Artifical(id);
+                player = new Artificial(id);
                 break;
             }
         }

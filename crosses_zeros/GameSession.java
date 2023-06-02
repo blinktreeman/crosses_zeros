@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameSession extends Board {
-    private final int winCount;
-    public List<Turn> playersTurns = new ArrayList<>();
+    public static int winCount;
+    public static List<Turn> playersTurns = new ArrayList<>();
 
     public GameSession(int n, int m, int winCount) {
         super(n, m);
-        this.winCount = winCount;
+        GameSession.winCount = winCount;
     }
 
     /**
